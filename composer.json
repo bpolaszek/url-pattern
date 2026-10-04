@@ -1,0 +1,54 @@
+{
+    "name": "bentools/url-pattern",
+    "description": "WHATWG URLPattern implementation for PHP",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Beno!t POLASZEK",
+            "email": "bpolaszek@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=8.3",
+        "ext-ctype": "*",
+        "ext-mbstring": "*",
+        "league/uri-polyfill": "^7.8"
+    },
+    "require-dev": {
+        "pestphp/pest": "^4.0",
+        "phpstan/phpstan": "^2.1",
+        "squizlabs/php_codesniffer": "^3.10"
+    },
+    "suggest": {
+        "ext-intl": "Faster IDNA processing on PHP < 8.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "BenTools\\UrlPattern\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "BenTools\\UrlPattern\\Tests\\": "tests/"
+        }
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    },
+    "scripts": {
+        "style:check": "phpcs",
+        "types:check": "phpstan analyse --memory-limit=1G",
+        "tests:run": "pest",
+        "tests:run:with-coverage": "XDEBUG_MODE=coverage pest --coverage --min=100",
+        "ci:check": [
+            "@composer validate --strict",
+            "@style:check",
+            "@types:check",
+            "@tests:run:with-coverage"
+        ]
+    }
+}
