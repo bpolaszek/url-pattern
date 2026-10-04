@@ -28,7 +28,9 @@ $pattern->test('foo');                              // false (never throws on in
 composer require bentools/url-pattern
 ```
 
-Requirements: PHP >= 8.3 with `ctype` and `mbstring`. `intl` is recommended on PHP < 8.5 (faster IDNA).
+Requirements: PHP >= 8.3 with `ctype` and `mbstring`, and PCRE2 >= 10.40 (for `\p{ID_Start}`; always true with the
+PCRE2 bundled with PHP, check it only if PHP is linked against a system library). `intl` is recommended on
+PHP < 8.5 (faster IDNA).
 
 ## Usage
 
@@ -159,7 +161,7 @@ accept) and preserves the ECMAScript semantics where PCRE differs:
 | `\s`, `\S` | Translated to the ECMAScript white space + line terminator set. |
 | `\d`, `\w`, `\b` | ASCII, like JavaScript in Unicode mode. With `ignoreCase`, JavaScript's `\w` also matches U+017F and U+212A; PCRE does not. |
 | `v`-flag set operations (`[A--B]`, `[A&&B]`, nested classes) | Supported, translated with lookaheads. |
-| `\q{...}` string disjunctions | Supported in class unions only; rejected in negated classes, intersections and subtractions. |
+| `\q{...}` string disjunctions | Supported in class unions; in negated classes, only single-code-point strings are accepted (like JavaScript); rejected in intersections and subtractions. |
 | Properties of strings (`\p{RGI_Emoji}`...) | **Not supported**: `InvalidPatternException`. |
 | `\p{...}` names | Passed to PCRE2, which matches property names loosely: some names JavaScript rejects (e.g. different casing) are accepted. |
 | Lookbehind | PCRE2 requires a bounded length (variable-length lookbehind needs PCRE2 >= 10.43, i.e. a recent PHP). |
