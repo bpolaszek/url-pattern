@@ -187,9 +187,12 @@ make a backtracking engine run for ages, freezing a single-threaded event loop. 
    the specification. It is a heuristic, not a proof of linearity, hence the next layer.
 2. **Bounded matching** (at match time): every `test()`/`exec()` call temporarily sets `pcre.backtrack_limit`
    (PCRE2's match limit) to the `backtrackLimit` option, and restores the previous value afterwards. The limit
-   applies to each component match: with the default of 100,000, a hostile component costs well under a
-   millisecond, and a whole call at most 8 times that. The limit is also enforced by the PCRE JIT, which therefore
-   stays enabled. Note that patterns without any regexp group can be polynomial too (e.g. `*a*a*a*b`); this
+   applies to each component match: with the default of 100,000, a hostile component costs about a millisecond
+   with the PCRE JIT, and a whole call at most 8 times that. The limit is also enforced by the JIT, which therefore
+   stays enabled. **Without the JIT** (`pcre.jit=0`, or a platform refusing executable memory), each unit of the
+   limit is far more expensive: a hostile component can cost about half a second with the default limit, so lower
+   `backtrackLimit` accordingly (e.g. 10,000) or keep the JIT enabled. Note that patterns without any regexp group
+   can be polynomial or even exponential too (e.g. `*a*a*a*b`, or `/x:a+`, which behaves like `(a+)+`); this
    layer covers them.
 3. **Fail as no match**: any PCRE error (limit exhausted, JIT stack limit, ...) results in `false` / `null`,
    never in an exception or a warning.
@@ -202,7 +205,8 @@ Recommendations for untrusted patterns:
 - Cache compiled patterns (LRU) instead of compiling them on every request.
 - Bound the length of patterns and URLs you accept.
 - If you do not need custom regular expressions, reject patterns where `$pattern->hasRegExpGroups` is `true`,
-  as the specification itself suggests.
+  as the specification itself suggests. This narrows the attack surface, but does not replace the backtracking
+  limit (see the regexp-free examples above).
 
 ## Development
 
