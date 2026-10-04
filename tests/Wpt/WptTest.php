@@ -72,10 +72,8 @@ it('passes the WPT urlpattern case', function (int $index, array $case): void {
             expect($resultInput)->toBe($expectedInput);
             continue;
         }
-        assert(is_array($expectedInput));
-        foreach (WptFixtures::COMPONENTS as $component) {
-            expect($resultInput[$component] ?? null)->toBe($expectedInput[$component] ?? null);
-        }
+        // Key order is irrelevant for an init dictionary.
+        expect($resultInput)->toEqual($expectedInput);
     }
 
     foreach (WptFixtures::COMPONENTS as $component) {
