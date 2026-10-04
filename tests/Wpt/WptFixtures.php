@@ -25,13 +25,6 @@ final class WptFixtures
 {
     public const COMPONENTS = ['protocol', 'username', 'password', 'hostname', 'port', 'pathname', 'search', 'hash'];
 
-    /**
-     * WPT cases knowingly not supported, indexed by position in the fixture file, with the reason.
-     *
-     * @var array<int, string>
-     */
-    public const SKIPPED_CASES = [];
-
     private const EARLIER_COMPONENTS = [
         'protocol' => [],
         'hostname' => ['protocol'],
@@ -61,14 +54,6 @@ final class WptFixtures
         $cases = json_decode($json, true, 512, JSON_THROW_ON_ERROR);
 
         return $cases;
-    }
-
-    /**
-     * @param array<int, string> $skippedCases
-     */
-    public static function skipReason(int $index, array $skippedCases = self::SKIPPED_CASES): ?string
-    {
-        return $skippedCases[$index] ?? null;
     }
 
     /**

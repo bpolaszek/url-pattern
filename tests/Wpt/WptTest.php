@@ -6,21 +6,15 @@ use BenTools\UrlPattern\Exception\InvalidPatternException;
 use BenTools\UrlPattern\Tests\Wpt\WptFixtures;
 use BenTools\UrlPattern\URLPattern;
 use BenTools\UrlPattern\URLPatternComponentResult;
-use PHPUnit\Framework\Assert;
 
 dataset('wpt', function (): iterable {
     foreach (WptFixtures::load() as $index => $case) {
         yield sprintf('#%d %s', $index, json_encode($case['pattern'], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE))
-            => [$index, $case];
+            => [$case];
     }
 });
 
-it('passes the WPT urlpattern case', function (int $index, array $case): void {
-    $skipReason = WptFixtures::skipReason($index);
-    if (null !== $skipReason) {
-        Assert::markTestSkipped($skipReason);
-    }
-
+it('passes the WPT urlpattern case', function (array $case): void {
     /** @var list<mixed> $patternArgs */
     $patternArgs = $case['pattern'];
     [$input, $baseURL, $options] = WptFixtures::constructorArgs($patternArgs);
